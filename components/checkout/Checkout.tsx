@@ -36,8 +36,7 @@ export default function Checkout() {
   ) => {
     event?.preventDefault();
     try {
-      await submit(); 
-    
+      await submit();
     } catch (err: any) {
       toast.error(err?.message || "Something went wrong", {
         position: "top-center",
@@ -84,7 +83,7 @@ export default function Checkout() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-[70%] md:w-[40%] rounded-3xl bg-white p-6 shadow-xl">
+      <div className="w-[90%] md:w-[40%] rounded-3xl bg-white p-6 shadow-xl">
         <Tabs
           active={state.activeTab}
           onChange={(t) => update("activeTab", t)}
