@@ -1,4 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import { Asset } from "@/types/checkout";
+import { SearchIcon } from "lucide-react";
 
 interface AmountRowProps {
   value: string;
@@ -7,6 +11,7 @@ interface AmountRowProps {
   selected: string;
   onSelect: (v: string) => void;
 }
+
 export function AmountRow({
   value,
   onChange,
@@ -14,10 +19,17 @@ export function AmountRow({
   selected,
   onSelect,
 }: AmountRowProps) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
   const selectedAsset = options.find(o => o.code === selected);
 
+  const filtered = options.filter(o =>
+    o.label.toLowerCase().includes(query.toLowerCase())
+  );
+
   return (
-    <div className="flex items-center justify-between rounded-xl px-4 py-">
+    <div className="flex items-center justify-between rounded-xl px-4 py-2">
       <input
         type="number"
         value={value}
@@ -25,38 +37,64 @@ export function AmountRow({
         className="w-1/2 outline-none"
       />
 
-      <div className="relative ">
-        {selectedAsset && (
-          <img
-            src={selectedAsset.icon}
-            alt=""
-            className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2"
-          />
+      {/* Dropdown */}
+      <div className="relative w-40">
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          className="flex w-full items-center gap-2 rounded-full border bg-gray-100 px-3 py-1"
+        >
+          {selectedAsset && (
+            <img src={selectedAsset.icon} className="h-5 w-5" />
+          )}
+          <span className="flex-1 text-left text-sm">
+            {selectedAsset?.label}
+          </span>
+          <span>▾</span>
+        </button>
+
+        {open && (
+          <div className="absolute z-50 mt-2 w-full rounded-xl border bg-white shadow-lg">
+            {/* Search */}
+            <div className="flex items-center gap-2 border rounded-full px-3 py-2 w-[90%] mx-auto my-2">
+              <SearchIcon className="h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full outline-none text-sm"
+              />
+            </div>
+
+            {/* Options */}
+            <ul className="max-h-48 overflow-auto">
+              {filtered.map(o => (
+                <li
+                  key={o.code}
+                  onClick={() => {
+                    onSelect(o.code);
+                    setOpen(false);
+                    setQuery("");
+                  }}
+                  className="
+                    flex cursor-pointer items-center gap-2 px-3 py-2
+                    hover:bg-gray-200
+                  "
+                >
+                  <img src={o.icon} className="h-4 w-4" />
+                  <span className="text-sm">{o.label}</span>
+                </li>
+              ))}
+
+              {filtered.length === 0 && (
+                <li className="px-3 py-2 text-sm text-gray-400">
+                  No results
+                </li>
+              )}
+            </ul>
+          </div>
         )}
-
-        <select
-          value={selected}
-          onChange={(e) => onSelect(e.target.value)}
-          className="
-            w-full appearance-none border-gray-200 rounded-full border
-            pl-10 pr-8 py-1
-            bg-gray-100 focus:outline-none 
-          "
-        >
-          {options.map((o) => (
-            <option key={o.code} value={o.code}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-
-        <svg
-          className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M5.23 7.21L10 10.94l4.77-4.77" />
-        </svg>
       </div>
     </div>
   );
