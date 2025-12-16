@@ -17,7 +17,7 @@ export function AmountRow({
   const selectedAsset = options.find(o => o.code === selected);
 
   return (
-    <div className="flex items-center justify-between rounded-xl border px-4 py-3">
+    <div className="flex items-center justify-between rounded-xl px-4 py-">
       <input
         type="number"
         value={value}
@@ -38,9 +38,9 @@ export function AmountRow({
           value={selected}
           onChange={(e) => onSelect(e.target.value)}
           className="
-            w-full appearance-none rounded-lg border
+            w-full appearance-none border-gray-200 rounded-full border
             pl-10 pr-8 py-1
-            bg-white
+            bg-gray-100 focus:outline-none 
           "
         >
           {options.map((o) => (
